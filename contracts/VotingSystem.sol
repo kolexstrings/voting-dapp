@@ -1,34 +1,40 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
+pragma solidity ^0.8.0;
 
 contract VotingSystem {
     struct Candidate {
-        uint256 id;
+        string party;
         string name;
         uint256 voteCount;
     }
 
     mapping(address => bool) public hasVoted;
+    mapping(string => uint256) public candidateIdByParty;  // Added mapping to associate party with candidate ID
     Candidate[] public candidates;
-
-   
 
     event VoteCasted(uint256 indexed candidateId, address voter);
 
     constructor() {
-        candidates.push(Candidate(0, "Tinubu", 0));
-        candidates.push(Candidate(1, "Atiku", 0));
-        candidates.push(Candidate(2, "Peter Obi", 0));
+        addCandidate("APC", "Tinubu");
+        addCandidate("PDP", "Atiku");
+        addCandidate("LP", "Peter Obi");
     }
 
-    function castVote(uint256 _candidateId) external {
-        require(_candidateId < candidates.length, "Invalid candidate ID");
+    function addCandidate(string memory _party, string memory _name) internal {  // Modified to add candidate and associate party with candidate ID
+        uint256 candidateId = candidates.length;
+        candidates.push(Candidate(_party, _name, 0));
+        candidateIdByParty[_party] = candidateId;
+    }
+
+    function castVote(string memory _party) external {
+        uint256 candidateId = candidateIdByParty[_party];  // Modified to get candidate ID based on party
+        require(candidateId > 0, "Invalid party");  // Check if the party is valid
         require(!hasVoted[msg.sender], "Already voted");
 
-        candidates[_candidateId].voteCount++;
+        candidates[candidateId].voteCount++;
         hasVoted[msg.sender] = true;
 
-        emit VoteCasted(_candidateId, msg.sender);
+        emit VoteCasted(candidateId, msg.sender);
     }
 
     function getCandidateCount() external view returns (uint256) {
