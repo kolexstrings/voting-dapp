@@ -1,3 +1,5 @@
+const VotingSystem = artifacts.require("VotingSystem");
+
 module.exports = function(_deployer) {
-  // Use deployer to state migration tasks.
+  _deployer.deploy("VotingSystem");
 };
