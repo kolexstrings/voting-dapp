@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.1.11",
+    "cryptoapis": "^1.13.0",
+    "cryptoapis.io": "^4.7.1",
     "dotenv": "^16.1.3"
   },
   "name": "voting-dapp",
